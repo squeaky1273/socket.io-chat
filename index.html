@@ -21,8 +21,10 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
+        var socket = io();
+        
         $(function () {
-          var socket = io();
+          
           $('form').submit(function(e){
             e.preventDefault(); // prevents page reloading
             socket.emit('chat message', $('#m').val());
@@ -30,6 +32,7 @@
             return false;
           });
           socket.on('chat message', function(msg){
+            console.log('Woo hoo ', msg)
             $('#messages').append($('<li>').text(msg));
           });
         });
