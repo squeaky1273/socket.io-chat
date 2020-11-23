@@ -15,6 +15,7 @@
   </head>
   <body>
     <ul id="messages"></ul>
+    <div id="user-is-typing-message"></div>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -22,15 +23,30 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
         var socket = io();
-        
         $(function () {
-          
+  
+          function typingMsg(msg){
+            socket.emit('user typing', msg);
+          }
+
+          $('#m').keypress(function(e) {
+            if(e.which === 13){
+              return;
+            }
+            typingMsg('User is typing...');
+          });
+  
+          socket.on('user typing', function(typingMsg){
+            $('#user-is-typing-message').text(typingMsg);
+          })
+  
           $('form').submit(function(e){
             e.preventDefault(); // prevents page reloading
             socket.emit('chat message', $('#m').val());
             $('#m').val('');
             return false;
           });
+          
           socket.on('chat message', function(msg){
             console.log('Woo hoo ', msg)
             $('#messages').append($('<li>').text(msg));

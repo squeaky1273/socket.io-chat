@@ -9,10 +9,15 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-    io.emit('chat message', 'a user connected');
-    socket.on('disconnect', () => {
-      io.emit('chat message', 'user disconnected');
-    });
+  io.emit('chat message', 'a user connected');
+  socket.on('disconnect', () => {
+    io.emit('chat message', 'user disconnected');
+  });
+
+  // show "User is typing" message when someone is typing
+  socket.on('user typing', (typingMsg) => {
+    io.emit('user typing', typingMsg);
+  });
 
     socket.on('chat message', (msg) => {
       io.emit('chat message', msg);
